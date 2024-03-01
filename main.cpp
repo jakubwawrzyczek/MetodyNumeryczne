@@ -7,6 +7,23 @@ struct Point {
     double y;
 };
 
+double li(int i, double x, int n, Point points[]) {
+
+    double ai = 1;
+    double bi = 1;
+
+    for (int j = 0 ; j < n ; j++) {
+        if (j == i) {
+            continue;
+        }
+
+        ai *= (x - points[j].x);
+        bi *= (points[i].x - points[j].x);
+    }
+
+    return ai/bi;
+}
+
 int main() {
 
     int n;
@@ -37,4 +54,13 @@ int main() {
     double x;
     cout << "\nPodaj wartosc x: ";
     cin >> x;
+
+    double y = 0;
+
+    for (int m = 0 ; m < n ; m++) {
+        y += li(m, x, n, points) * points[m].y;
+    }
+
+    cout << "\nWykonując interpolację dla punktu podanego przez użytkownika: " << endl;
+    cout << "f(" << x << ") = " << y << endl;
 }
