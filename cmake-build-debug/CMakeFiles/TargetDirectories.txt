@@ -1,0 +1,3 @@
+/Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/cmake-build-debug/CMakeFiles/MetodyNumeryczne.dir
+/Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/cmake-build-debug/CMakeFiles/rebuild_cache.dir
