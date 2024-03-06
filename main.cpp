@@ -21,8 +21,35 @@ double calc_p_k(int k, double x, Point* points) {
     return p_k;
 }
 
-double calc_b_k(double x, Point* points) {
+double calc_b_k(int k, Point* points) {
 
+    double b_k = 0;
+    int i = 0;
+
+    while (i <= k) {
+        int j = 0;
+        double mianownik = 1;
+
+        while (j <= k) {
+            if (i == j) {
+                j++;
+                continue;
+            }
+
+            mianownik *= (points[i].x - points[j].x);
+
+            j++;
+        }
+
+        b_k += points[i].y / mianownik;
+        i++;
+    }
+
+    if (b_k < 0.01) {
+        b_k = 0;
+    }
+
+    return b_k;
 }
 
 int main() {
@@ -57,17 +84,27 @@ int main() {
     cout << "\nPodaj wartosc x: ";
     cin >> x;
 
-    // obliczanie p_k i zapisywanie do zmiennej (testowo bo pozniej trzeba w tabeli wszystkie zapisac)
-    double p_k = calc_p_k(2, x, points);
-    cout << p_k;
+    // obliczanie p_k dla k do n-1 i zapisywanie do tablicy
+    double p_table[n];
 
-    // obliczanie b_k i zapisywanie do zmiennej (testowo bo pozniej trzeba w tabeli wszystkie zapisac)
+    for (int i = 0; i < n; i++) {
+        p_table[i] = calc_p_k(i, x, points);
+    }
 
+    // wypisywanie tablicy z p
+    for (int i = 0; i < n; i++) {
+        cout << "\np_" << i << " = " << p_table[i];
+    }
 
-    // p_0 = 1
-    double p_0 = 1.00;
+    // obliczanie b_k i zapisywanie do tablicy
+    double b_table[n];
 
-    // b_0 = f(x_0), czyli wartosc (y) funkcji dla pierwszego x z listy
-    double b_0 = points[0].y;
+    for (int i = 0; i < n; i++) {
+        b_table[i] = calc_b_k(i, points);
+    }
 
+    // wypisywanie tablicy z b
+    for (int i = 0; i < n; i++) {
+        cout << "\nb_" << i << " = " << b_table[i];
+    }
 }
