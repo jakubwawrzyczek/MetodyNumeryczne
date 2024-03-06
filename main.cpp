@@ -104,7 +104,18 @@ int main() {
     }
 
     // wypisywanie tablicy z b
+    cout << "\n";
     for (int i = 0; i < n; i++) {
         cout << "\nb_" << i << " = " << b_table[i];
     }
+
+    // wartosc wielomianu Newtona w danym punkcie
+    double w_x = 0;
+
+    for (int i = 0; i < n; ++i) {
+        w_x += p_table[i]*b_table[i];
+    }
+
+    cout << "\n\nWartość wielomianu w punkcie podanym przez użytkownika:" << endl;
+    cout << "f(" << x <<") = " << w_x << endl;
 }
