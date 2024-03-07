@@ -7,6 +7,7 @@ struct Point {
     double y;
 };
 
+//li to wielomian, który w danym wezle przyjmuje wartosc 1 a w reszcie 0
 double li(int i, double x, int n, Point points[]) {
 
     double ai = 1;
@@ -57,6 +58,7 @@ int main() {
 
     double y = 0;
 
+    // dodawanie wszystkich li i mnozenie ich przez odpowiadajaca im wartosc funkcji
     for (int m = 0 ; m < n ; m++) {
         y += li(m, x, n, points) * points[m].y;
     }

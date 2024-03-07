@@ -45,10 +45,6 @@ double calc_b_k(int k, Point* points) {
         i++;
     }
 
-    if (b_k < 0.01) {
-        b_k = 0;
-    }
-
     return b_k;
 }
 
@@ -92,6 +88,7 @@ int main() {
     }
 
     // wypisywanie tablicy z p
+
     for (int i = 0; i < n; i++) {
         cout << "\np_" << i << " = " << p_table[i];
     }

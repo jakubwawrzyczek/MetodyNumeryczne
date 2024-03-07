@@ -46,9 +46,9 @@ cmake_ninja_workdir = /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/cmake-buil
 
 build cmake_object_order_depends_target_MetodyNumeryczne: phony || CMakeFiles/MetodyNumeryczne.dir
 
-build CMakeFiles/MetodyNumeryczne.dir/main.cpp.o: CXX_COMPILER__MetodyNumeryczne_Debug /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/main.cpp || cmake_object_order_depends_target_MetodyNumeryczne
-  DEP_FILE = CMakeFiles/MetodyNumeryczne.dir/main.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -std=gnu++14
+build CMakeFiles/MetodyNumeryczne.dir/newton.cpp.o: CXX_COMPILER__MetodyNumeryczne_Debug /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/newton.cpp || cmake_object_order_depends_target_MetodyNumeryczne
+  DEP_FILE = CMakeFiles/MetodyNumeryczne.dir/newton.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -mmacosx-version-min=14.2 -std=gnu++14
   OBJECT_DIR = CMakeFiles/MetodyNumeryczne.dir
   OBJECT_FILE_DIR = CMakeFiles/MetodyNumeryczne.dir
 
@@ -60,8 +60,8 @@ build CMakeFiles/MetodyNumeryczne.dir/main.cpp.o: CXX_COMPILER__MetodyNumeryczne
 #############################################
 # Link the executable MetodyNumeryczne
 
-build MetodyNumeryczne: CXX_EXECUTABLE_LINKER__MetodyNumeryczne_Debug CMakeFiles/MetodyNumeryczne.dir/main.cpp.o
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk
+build MetodyNumeryczne: CXX_EXECUTABLE_LINKER__MetodyNumeryczne_Debug CMakeFiles/MetodyNumeryczne.dir/newton.cpp.o
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -mmacosx-version-min=14.2
   OBJECT_DIR = CMakeFiles/MetodyNumeryczne.dir
   POST_BUILD = :
   PRE_LINK = :
