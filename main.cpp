@@ -13,12 +13,14 @@ int main() {
 
     int **rownania = new int*[n];
     for (int i = 0; i < n; ++i) {
-        rownania[i] = new int[n];
+        rownania[i] = new int[n+1];
     }
+
+    int wartosci[n];
 
     // Wypelniane tablicy wartosciami wspolczynnikow
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
+        for (int j = 0; j < n+1; ++j) {
             int g;
             file >> g;
             rownania[i][j] = g;
@@ -26,9 +28,9 @@ int main() {
     }
 
     // Wypisywanie wspolczynnikow przed rownaniami
-    cout << "\nWspolczynniki:" << endl;
+    cout << "\nMacierz:" << endl;
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
+        for (int j = 0; j < n+1; ++j) {
             cout << "|\t" << rownania[i][j] << "\t";
         }
         cout << "|";
