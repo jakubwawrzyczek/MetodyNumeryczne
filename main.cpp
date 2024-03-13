@@ -2,6 +2,10 @@
 #include <fstream>
 using namespace std;
 
+double mnoznik(int i1, int i2, double** macierz) {
+    return macierz[i1][0]/macierz[i2][0];
+}
+
 int main() {
 
     int n;
@@ -11,9 +15,9 @@ int main() {
     file >> n;
     cout << "Liczba rownan: " << n << endl;
 
-    int **rownania = new int*[n];
+    double **rownania = new double*[n];
     for (int i = 0; i < n; ++i) {
-        rownania[i] = new int[n+1];
+        rownania[i] = new double[n+1];
     }
 
     int wartosci[n];
@@ -21,7 +25,7 @@ int main() {
     // Wypelniane tablicy wartosciami wspolczynnikow
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n+1; ++j) {
-            int g;
+            double g;
             file >> g;
             rownania[i][j] = g;
         }
@@ -37,4 +41,7 @@ int main() {
         cout << "\n";
     }
 
+    // cout << mnoznik(2, 0, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
+
+    
 }
