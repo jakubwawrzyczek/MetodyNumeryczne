@@ -72,37 +72,42 @@ double wylicz_x(int i, int n, double** macierz, double* x) {
 int main() {
 
     int n;
+    cout << "Podaj n: ";
+    cin >> n;
+    cout << "\n";
 
-    fstream file("gauss-data.txt");
+    fstream A("gauss-data-A.txt");
+    fstream B("gauss-data-B.txt");
 
-    file >> n;
-    cout << "--- Liczba rownan: ---" << "\nn = " << n << endl;
+    cout << "--- Liczba rownan ---" << "\nn = " << n << endl;
 
     double **rownania = new double*[n];
     for (int i = 0; i < n; ++i) {
         rownania[i] = new double[n+1];
     }
 
-    int wartosci[n];
-
     // Wypelniane tablicy wartosciami wspolczynnikow
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n+1; ++j) {
+        for (int j = 0; j < n; ++j) {
             double g;
-            file >> g;
+            A >> g;
             rownania[i][j] = g;
         }
+
+        double h;
+        B >> h;
+        rownania[i][n] = h;
     }
 
 
-    cout << "\n--- Macierz rozszerzona: ---" << endl;
+    cout << "\n--- Macierz rozszerzona ---" << endl;
     wypisz_macierz(rownania, n); // przed odejmowaniem wierszy
 
 
     //    cout << mnoznik(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
     wyzeruj_po_przekatnej(rownania, n);
 
-    cout << "\n--- Macierz rozszerzona po przeksztalceniach: ---" << endl;
+    cout << "\n--- Macierz rozszerzona po przeksztalceniach ---" << endl;
     wypisz_macierz(rownania, n);    // po odjeciu wierszy
 
 
