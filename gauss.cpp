@@ -95,14 +95,14 @@ int main() {
     }
 
 
-    cout << "\n---Macierz rozszerzona: ---" << endl;
+    cout << "\n--- Macierz rozszerzona: ---" << endl;
     wypisz_macierz(rownania, n); // przed odejmowaniem wierszy
 
 
     //    cout << mnoznik(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
     wyzeruj_po_przekatnej(rownania, n);
 
-    cout << "\n---Macierz rozszerzona po przeksztalceniach: ---" << endl;
+    cout << "\n--- Macierz rozszerzona po przeksztalceniach: ---" << endl;
     wypisz_macierz(rownania, n);    // po odjeciu wierszy
 
 

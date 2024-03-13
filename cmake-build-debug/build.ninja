@@ -46,8 +46,8 @@ cmake_ninja_workdir = /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/cmake-buil
 
 build cmake_object_order_depends_target_MetodyNumeryczne: phony || CMakeFiles/MetodyNumeryczne.dir
 
-build CMakeFiles/MetodyNumeryczne.dir/main.cpp.o: CXX_COMPILER__MetodyNumeryczne_Debug /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/main.cpp || cmake_object_order_depends_target_MetodyNumeryczne
-  DEP_FILE = CMakeFiles/MetodyNumeryczne.dir/main.cpp.o.d
+build CMakeFiles/MetodyNumeryczne.dir/gauss.cpp.o: CXX_COMPILER__MetodyNumeryczne_Debug /Users/jakubwawrzyczek/Desktop/MetodyNumeryczne/gauss.cpp || cmake_object_order_depends_target_MetodyNumeryczne
+  DEP_FILE = CMakeFiles/MetodyNumeryczne.dir/gauss.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -mmacosx-version-min=14.2 -std=gnu++14
   OBJECT_DIR = CMakeFiles/MetodyNumeryczne.dir
   OBJECT_FILE_DIR = CMakeFiles/MetodyNumeryczne.dir
@@ -60,7 +60,7 @@ build CMakeFiles/MetodyNumeryczne.dir/main.cpp.o: CXX_COMPILER__MetodyNumeryczne
 #############################################
 # Link the executable MetodyNumeryczne
 
-build MetodyNumeryczne: CXX_EXECUTABLE_LINKER__MetodyNumeryczne_Debug CMakeFiles/MetodyNumeryczne.dir/main.cpp.o
+build MetodyNumeryczne: CXX_EXECUTABLE_LINKER__MetodyNumeryczne_Debug CMakeFiles/MetodyNumeryczne.dir/gauss.cpp.o
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -mmacosx-version-min=14.2
   OBJECT_DIR = CMakeFiles/MetodyNumeryczne.dir
   POST_BUILD = :
