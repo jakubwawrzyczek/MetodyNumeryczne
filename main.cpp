@@ -3,8 +3,6 @@
 using namespace std;
 
 void wypisz_macierz(double** macierz, int n) {
-    // Wypisywanie wspolczynnikow przed rownaniami
-    cout << "\nMacierz:" << endl;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n+1; ++j) {
             cout << "|\t" << macierz[i][j] << "\t";
@@ -51,6 +49,26 @@ void wyzeruj_po_przekatnej(double** macierz, int n) {
     }
 }
 
+double wylicz_x(int i, int n, double** macierz, double* x) {
+    double b_i = macierz[i][n];
+
+    double a_ii = macierz[i][i];
+
+    double E_aikXxk = 0;
+
+    int k = i+1;
+
+    while (k < n) {
+
+        E_aikXxk += macierz[i][k]*x[k];
+
+        k++;
+    }
+
+    return (b_i - E_aikXxk)/a_ii;
+
+}
+
 int main() {
 
     int n;
@@ -58,7 +76,7 @@ int main() {
     fstream file("gauss-data.txt");
 
     file >> n;
-    cout << "Liczba rownan: " << n << endl;
+    cout << "--- Liczba rownan: ---" << "\nn = " << n << endl;
 
     double **rownania = new double*[n];
     for (int i = 0; i < n; ++i) {
@@ -77,12 +95,30 @@ int main() {
     }
 
 
-
+    cout << "\n---Macierz rozszerzona: ---" << endl;
     wypisz_macierz(rownania, n); // przed odejmowaniem wierszy
+
+
     //    cout << mnoznik(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
     wyzeruj_po_przekatnej(rownania, n);
+
+    cout << "\n---Macierz rozszerzona po przeksztalceniach: ---" << endl;
     wypisz_macierz(rownania, n);    // po odjeciu wierszy
 
 
+    // tablica przechowuajca wartosci x
+    double x[n];
 
-}
+    // wartosc x_n
+    x[n-1] = rownania[n-1][n]/rownania[n-1][n-1];
+
+    for (int i = n-2; i >= 0; --i) {
+        x[i] = wylicz_x(i, n, rownania, x);
+    }
+    
+    // wypisywanie x
+    cout << "\n--- Wyliczone wartosci x ---" << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << "x_" << i << " = " << x[i] << endl;
+    }
+}   
