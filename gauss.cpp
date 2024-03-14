@@ -2,57 +2,63 @@
 #include <fstream>
 using namespace std;
 
-void print_matrix(double** macierz, int n) {
+void print_matrix(double** matrix, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n+1; ++j) {
-            cout << "|\t" << macierz[i][j] << "\t";
+            cout << "|\t" << matrix[i][j] << "\t";
         }
         cout << "|";
         cout << "\n";
     }
 }
 
-double multiplier(int i1, int i2, int j, double** macierz) {
-//    cout << macierz[i1][j];
-//    cout << macierz[i2][j];
-    return macierz[i1][j]/macierz[i2][j];
+double multiplier(int i1, int i2, int j, double** matrix) {
+//    cout << matrix[i1][j];
+//    cout << matrix[i2][j];
+
+    if (matrix[i2][j] == 0) {
+        cout << "You can't divide by 0!" << endl;
+        exit;
+    }
+
+    return matrix[i1][j]/matrix[i2][j];
 }
-                        // wa - wb*mab
-void substract_row(int wa, int wb, double mab, int n, double** macierz) {
+                        // ra - rb*mab
+void substract_row(int ra, int rb, double mab, int n, double** matrix) {
 
     for (int i = 0; i <= n; ++i) {
-        macierz[wa][i] = macierz[wa][i] - macierz[wb][i]*mab;
+        matrix[ra][i] = matrix[ra][i] - matrix[rb][i]*mab;
     }
 
 }
 
-void upper_triangular(double** macierz, int n) {
+void upper_triangular(double** matrix, int n) {
     // w1 - w0*m10, w2 - w0*m20, w3 - w0*m30
     // w2 - w1*m21, w3 - w1*m31
     // w3 - w2*m32
 
-    int wb = 0; // wiersz ktory odejmujemy
+    int rb = 0; // wiersz ktory odejmujemy
 
-    while (wb < n-1) {
-        for (int wa = wb+1; wa < n; ++wa) {
+    while (rb < n-1) {
+        for (int ra = rb+1; ra < n; ++ra) {
             // pomocnicze printowanie, zeby zobaczyc czy petle dzialaja odpowiednio
 //            cout << "Wiersz od ktorego odejmujemy: " << wa << ", Wiersz ktory odejmujemy: " << wb << endl;
 
             // odejmowanie
-            double mab = multiplier(wa, wb, wb, macierz);
+            double mab = multiplier(ra, rb, rb, matrix);
 //            cout << mab;
 
-            substract_row(wa, wb, mab, n, macierz);
+            substract_row(ra, rb, mab, n, matrix);
         }
 
-        wb++;
+        rb++;
     }
 }
 
-double compute_x(int i, int n, double** macierz, double* x) {
-    double b_i = macierz[i][n];
+double compute_x(int i, int n, double** matrix, double* x) {
+    double b_i = matrix[i][n];
 
-    double a_ii = macierz[i][i];
+    double a_ii = matrix[i][i];
 
     double E_aikXxk = 0;
 
@@ -60,7 +66,7 @@ double compute_x(int i, int n, double** macierz, double* x) {
 
     while (k < n) {
 
-        E_aikXxk += macierz[i][k]*x[k];
+        E_aikXxk += matrix[i][k]*x[k];
 
         k++;
     }
@@ -81,9 +87,9 @@ int main() {
 
     cout << "--- Liczba rownan ---" << "\nn = " << n << endl;
 
-    double **rownania = new double*[n];
+    double **augmented_matrix = new double*[n];
     for (int i = 0; i < n; ++i) {
-        rownania[i] = new double[n+1];
+        augmented_matrix[i] = new double[n+1];
     }
 
     // Wypelniane tablicy wartosciami wspolczynnikow
@@ -91,34 +97,34 @@ int main() {
         for (int j = 0; j < n; ++j) {
             double g;
             A >> g;
-            rownania[i][j] = g;
+            augmented_matrix[i][j] = g;
         }
 
         double h;
         B >> h;
-        rownania[i][n] = h;
+        augmented_matrix[i][n] = h;
     }
 
 
     cout << "\n--- Macierz rozszerzona ---" << endl;
-    print_matrix(rownania, n); // przed odejmowaniem wierszy
+    print_matrix(augmented_matrix, n); // przed odejmowaniem wierszy
 
 
     //    cout << multiplier(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
-    upper_triangular(rownania, n);
+    upper_triangular(augmented_matrix, n);
 
     cout << "\n--- Macierz rozszerzona po przeksztalceniach ---" << endl;
-    print_matrix(rownania, n);    // po odjeciu wierszy
+    print_matrix(augmented_matrix, n);    // po odjeciu wierszy
 
 
     // tablica przechowuajca wartosci x
     double x[n];
 
     // wartosc x_n
-    x[n-1] = rownania[n-1][n]/rownania[n-1][n-1];
+    x[n-1] = augmented_matrix[n-1][n]/augmented_matrix[n-1][n-1];
 
     for (int i = n-2; i >= 0; --i) {
-        x[i] = compute_x(i, n, rownania, x);
+        x[i] = compute_x(i, n, augmented_matrix, x);
     }
     
     // wypisywanie x
