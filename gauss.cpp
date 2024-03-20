@@ -100,7 +100,7 @@ void partial_pivoting(int n, double** matrix) {
     }
 }
 
-void gauss_crout(int n, double** matrix) {
+void gauss_crout(int n, double** matrix, bool &does_need_x_swap, int &index_to_swap) {
     int max_id = 0;
     double max_value = matrix[0][0];
 
@@ -115,6 +115,8 @@ void gauss_crout(int n, double** matrix) {
     cout << "[" << max_id << "], " << max_value << endl;
 
     if (max_id != 0) {
+        does_need_x_swap = true;
+        index_to_swap = max_id;
         for (int i = 0; i < n; ++i) {
             double temp = matrix[i][0];
             matrix[i][0] = matrix[i][max_id];
@@ -124,6 +126,10 @@ void gauss_crout(int n, double** matrix) {
 }
 
 int main() {
+
+    bool does_need_x_swap = false;
+    int index_to_swap;
+
     int n;
     cout << "Podaj n: ";
     cin >> n;
@@ -153,7 +159,7 @@ int main() {
     }
 
     //partial_pivoting(n, augmented_matrix); // zadanie 1
-    gauss_crout(n, augmented_matrix); // zadanie 2
+    gauss_crout(n, augmented_matrix, does_need_x_swap, index_to_swap); // zadanie 2
 
     cout << "\n--- Macierz rozszerzona ---" << endl;
     print_matrix(augmented_matrix, n); // przed odejmowaniem wierszy
@@ -173,6 +179,13 @@ int main() {
 
     for (int i = n-2; i >= 0; --i) {
         x[i] = compute_x(i, n, augmented_matrix, x);
+    }
+
+    // if we use gauss-crout and we need to swap x's
+    if (does_need_x_swap) {
+        double temp = x[0];
+        x[0] = x[index_to_swap];
+        x[index_to_swap] = temp;
     }
     
     // wypisywanie x
