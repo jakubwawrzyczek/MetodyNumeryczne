@@ -1,11 +1,12 @@
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 void print_matrix(double** matrix, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n+1; ++j) {
-            cout << "|\t" << matrix[i][j] << "\t";
+                cout << "|\t" << matrix[i][j] << "\t";
         }
         cout << "|";
         cout << "\n";
@@ -17,8 +18,8 @@ double multiplier(int i1, int i2, int j, double** matrix) {
 //    cout << matrix[i2][j];
 
     if (matrix[i2][j] == 0) {
-        cout << "You can't divide by 0!" << endl;
-        exit;
+        cout << "\n\n!!!! Blad poczas wyliczania mnoznika, nie mozna dzielic przez 0 !!!!" << endl;
+        terminate();
     }
 
     return matrix[i1][j]/matrix[i2][j];
@@ -75,6 +76,33 @@ double compute_x(int i, int n, double** matrix, double* x) {
 
 }
 
+// partial pivoting (Gauss)
+void partial_pivoting(int n, double** matrix) {
+    int max_id = 0;
+    double max_value = matrix[0][0];
+
+    for (int i = 0; i < n; ++i) {
+        if (max_value < matrix[i][0]) {
+            max_value = matrix[i][0];
+            max_id = i;
+        }
+    }
+
+    cout << "[" << max_id << "], " << max_value << endl;
+
+    if (max_id != 0) {
+        for (int i = 0; i < n; ++i) {
+            double temp = matrix[0][i];
+            matrix[0][i] = matrix[max_id][i];
+            matrix[max_id][i] = temp;
+        }
+    }
+}
+
+void gauss_crout(int n, double** matrix) {
+    
+}
+
 int main() {
 
     int n;
@@ -105,10 +133,10 @@ int main() {
         augmented_matrix[i][n] = h;
     }
 
+    partial_pivoting(n, augmented_matrix); // zadanie 1
 
     cout << "\n--- Macierz rozszerzona ---" << endl;
     print_matrix(augmented_matrix, n); // przed odejmowaniem wierszy
-
 
     //    cout << multiplier(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
     upper_triangular(augmented_matrix, n);
