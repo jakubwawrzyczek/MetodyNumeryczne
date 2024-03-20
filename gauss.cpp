@@ -88,10 +88,11 @@ void partial_pivoting(int n, double** matrix) {
         }
     }
 
+    cout << "\nZamieniony wiersz:" << endl;
     cout << "[" << max_id << "], " << max_value << endl;
 
     if (max_id != 0) {
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n+1; ++i) {
             double temp = matrix[0][i];
             matrix[0][i] = matrix[max_id][i];
             matrix[max_id][i] = temp;
@@ -110,11 +111,19 @@ void gauss_crout(int n, double** matrix) {
         }
     }
 
+    cout << "\nZamieniony wiersz:" << endl;
     cout << "[" << max_id << "], " << max_value << endl;
+
+    if (max_id != 0) {
+        for (int i = 0; i < n; ++i) {
+            double temp = matrix[i][0];
+            matrix[i][0] = matrix[i][max_id];
+            matrix[i][max_id] = temp;
+        }
+    }
 }
 
 int main() {
-
     int n;
     cout << "Podaj n: ";
     cin >> n;
