@@ -105,7 +105,7 @@ void gauss_crout(int n, double** matrix, bool &does_need_x_swap, int &index_to_s
     double max_value = matrix[0][0];
 
     for (int i = 0; i < n+1; ++i) {
-        if (max_value < matrix[0][i]) {
+        if (max_value < abs(matrix[0][i])) {
             max_value = matrix[0][i];
             max_id = i;
         }
@@ -158,8 +158,8 @@ int main() {
         augmented_matrix[i][n] = h;
     }
 
-    //partial_pivoting(n, augmented_matrix); // zadanie 1
-    gauss_crout(n, augmented_matrix, does_need_x_swap, index_to_swap); // zadanie 2
+    partial_pivoting(n, augmented_matrix); // zadanie 1
+    //gauss_crout(n, augmented_matrix, does_need_x_swap, index_to_swap); // zadanie 2
 
     cout << "\n--- Macierz rozszerzona ---" << endl;
     print_matrix(augmented_matrix, n); // przed odejmowaniem wierszy
