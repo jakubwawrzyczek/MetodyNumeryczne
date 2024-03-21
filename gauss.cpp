@@ -155,7 +155,7 @@ int main() {
     cout << endl;
 
     // zadanie 1
-    //vector<double> initialSolutions = solveGauss(matrix);
+    // vector<double> initialSolutions = solveGauss(matrix);
 
     // zadanie 2
     vector<int> columnOrder;
