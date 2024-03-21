@@ -20,7 +20,10 @@ Matrix readMatrixFromFile(const string& A, const string& B) {
         exit(EXIT_FAILURE);
     }
 
-    int n = 4;
+    int n;
+    cout << "Podaj n: ";
+    cin >> n;
+
     Matrix matrix;
     matrix.size = n;
     matrix.data.resize(n, vector<double>(n + 1)); // Macierz rozszerzona [n x (n+1)]
@@ -48,13 +51,14 @@ void printMatrix(const Matrix& matrix) {
     }
 }
 
+// Zamiana kolumn
 void swapRows(vector<vector<double>>& matrix, int row1, int row2) {
     if (row1 != row2) {
         swap(matrix[row1], matrix[row2]);
     }
 }
 
-// Funkcja do rozwiązania układu równań metodą Gaussa
+// Funkcja do rozwiązania układu równań metodą Gaussa z pivotingiem
 vector<double> solveGauss(Matrix matrix) {
     int n = matrix.size;
 
@@ -77,10 +81,10 @@ vector<double> solveGauss(Matrix matrix) {
         }
     }
 
-    cout << "Macierz rozszerzona po obliczeniach:" << endl;
+    cout << "Macierz rozszerzona po triangulacji:" << endl;
     printMatrix(matrix);
 
-    // Rozwiązywanie układu równań
+    // Rozwiązywanie układu równań (mozna to wrzucic do osobnej funkcji)
     vector<double> solutions(n);
     for (int i = n - 1; i >= 0; --i) {
         solutions[i] = matrix.data[i][n];
@@ -93,6 +97,8 @@ vector<double> solveGauss(Matrix matrix) {
     return solutions;
 }
 
+
+// Rozwiazywanie croutem
 vector<double> solveGaussCrout(Matrix matrix, vector<int>& columnOrder) {
     int n = matrix.size;
 
@@ -125,6 +131,7 @@ vector<double> solveGaussCrout(Matrix matrix, vector<int>& columnOrder) {
         }
     }
 
+    cout << "Macierz po triangulacji:\n";
     printMatrix(matrix);
 
     // Rozwiązywanie układu równań
@@ -147,16 +154,17 @@ int main() {
     printMatrix(matrix);
     cout << endl;
 
-    vector<double> initialSolutions = solveGauss(matrix);
+    // zadanie 1
+    //vector<double> initialSolutions = solveGauss(matrix);
 
     // zadanie 2
-//    vector<int> columnOrder;
-//    vector<double> initialSolutions = solveGaussCrout(matrix, columnOrder);
-//
-//    cout << "Numery kolumn: " << endl;
-//    for (int i = 0; i < matrix.size; ++i)
-//        cout << columnOrder[i] << " ";
-//    cout << endl << endl;
+    vector<int> columnOrder;
+    vector<double> initialSolutions = solveGaussCrout(matrix, columnOrder);
+
+    cout << "\nIndeksowanie kolumn po zamianach: " << endl;
+    for (int i = 0; i < matrix.size; ++i)
+        cout << columnOrder[i] << " ";
+    cout << endl << endl;
 
     cout << "\nRozwiązanie układu równań:" << endl;
     for (size_t i = 0; i < initialSolutions.size(); ++i) {
