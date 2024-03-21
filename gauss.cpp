@@ -1,196 +1,167 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <cmath>
 
 using namespace std;
 
-void print_matrix(double** matrix, int n) {
+// Struktura reprezentująca macierz rozszerzoną
+struct Matrix {
+    vector<vector<double>> data; // Dane macierzy
+    int size; // Rozmiar macierzy
+};
+
+// Funkcja do wczytania macierzy z pliku
+Matrix readMatrixFromFile(const string& A, const string& B) {
+    ifstream fileA(A);
+    ifstream fileB(B);
+    if (!fileA || !fileB) {
+        cerr << "Nie można otworzyć pliku." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    int n = 4;
+    Matrix matrix;
+    matrix.size = n;
+    matrix.data.resize(n, vector<double>(n + 1)); // Macierz rozszerzona [n x (n+1)]
+
+    // Wczytywanie danych z pliku
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n+1; ++j) {
-                cout << "|\t" << matrix[i][j] << "\t";
+        for (int j = 0; j < n; ++j) {
+            fileA >> matrix.data[i][j];
         }
-        cout << "|";
-        cout << "\n";
+        fileB >> matrix.data[i][n];
+    }
+    fileA.close();
+    fileB.close();
+
+    return matrix;
+}
+
+// Funkcja do wypisania macierzy
+void printMatrix(const Matrix& matrix) {
+    for (int i = 0; i < matrix.size; ++i) {
+        for (int j = 0; j <= matrix.size; ++j) {
+            cout << "|\t" << matrix.data[i][j] << "\t";
+        }
+        cout << "\t|" << endl;
     }
 }
 
-double multiplier(int i1, int i2, int j, double** matrix) {
-//    cout << matrix[i1][j];
-//    cout << matrix[i2][j];
-
-    if (matrix[i2][j] == 0) {
-        cout << "\n\n!!!! Blad poczas wyliczania mnoznika, nie mozna dzielic przez 0 !!!!" << endl;
-        terminate();
-    }
-
-    return matrix[i1][j]/matrix[i2][j];
-}
-                        // ra - rb*mab
-void substract_row(int ra, int rb, double mab, int n, double** matrix) {
-
-    for (int i = 0; i <= n; ++i) {
-        matrix[ra][i] = matrix[ra][i] - matrix[rb][i]*mab;
-    }
-
-}
-
-void upper_triangular(double** matrix, int n) {
-    // w1 - w0*m10, w2 - w0*m20, w3 - w0*m30
-    // w2 - w1*m21, w3 - w1*m31
-    // w3 - w2*m32
-
-    int rb = 0; // wiersz ktory odejmujemy
-
-    while (rb < n-1) {
-        for (int ra = rb+1; ra < n; ++ra) {
-            // pomocnicze printowanie, zeby zobaczyc czy petle dzialaja odpowiednio
-//            cout << "Wiersz od ktorego odejmujemy: " << wa << ", Wiersz ktory odejmujemy: " << wb << endl;
-
-            // odejmowanie
-            double mab = multiplier(ra, rb, rb, matrix);
-//            cout << mab;
-
-            substract_row(ra, rb, mab, n, matrix);
-        }
-
-        rb++;
+void swapRows(vector<vector<double>>& matrix, int row1, int row2) {
+    if (row1 != row2) {
+        swap(matrix[row1], matrix[row2]);
     }
 }
 
-double compute_x(int i, int n, double** matrix, double* x) {
-    double b_i = matrix[i][n];
+// Funkcja do rozwiązania układu równań metodą Gaussa
+vector<double> solveGauss(Matrix matrix) {
+    int n = matrix.size;
 
-    double a_ii = matrix[i][i];
-
-    double E_aikXxk = 0;
-
-    int k = i+1;
-
-    while (k < n) {
-
-        E_aikXxk += matrix[i][k]*x[k];
-
-        k++;
+    // Eliminacja współczynników
+    for (int i = 0; i < n - 1; ++i) {
+        int maxRowIndex = i;
+        double maxValue = abs(matrix.data[i][i]);
+        for (int k = i + 1; k < n; ++k) {
+            if (abs(matrix.data[k][i]) > maxValue) {
+                maxValue = abs(matrix.data[k][i]);
+                maxRowIndex = k;
+            }
+        }
+        swapRows(matrix.data, i, maxRowIndex);
+        for (int k = i + 1; k < n; k++) {
+            double factor = matrix.data[k][i] / matrix.data[i][i];
+            for (int j = i; j <= n; ++j) {
+                matrix.data[k][j] -= factor * matrix.data[i][j];
+            }
+        }
     }
 
-    return (b_i - E_aikXxk)/a_ii;
+    cout << "Macierz rozszerzona po obliczeniach:" << endl;
+    printMatrix(matrix);
 
+    // Rozwiązywanie układu równań
+    vector<double> solutions(n);
+    for (int i = n - 1; i >= 0; --i) {
+        solutions[i] = matrix.data[i][n];
+        for (int j = i + 1; j < n; ++j) {
+            solutions[i] -= matrix.data[i][j] * solutions[j];
+        }
+        solutions[i] /= matrix.data[i][i];
+    }
+
+    return solutions;
 }
 
-// partial pivoting (Gauss)
-void partial_pivoting(int n, double** matrix) {
-    int max_id = 0;
-    double max_value = matrix[0][0];
+vector<double> solveGaussCrout(Matrix matrix, vector<int>& columnOrder) {
+    int n = matrix.size;
 
-    for (int i = 0; i < n; ++i) {
-        if (max_value < matrix[i][0]) {
-            max_value = matrix[i][0];
-            max_id = i;
+    // Initialize column order vector
+    columnOrder.resize(n);
+    for (int i = 0; i < n; ++i)
+        columnOrder[i] = i;
+
+    // Forward elimination
+    for (int k = 0; k < n - 1; ++k) {
+        // Partial pivoting
+        int maxRowIndex = k;
+        double maxVal = abs(matrix.data[k][k]);
+        for (int i = k + 1; i < n; ++i) {
+            if (abs(matrix.data[i][k]) > maxVal) {
+                maxVal = abs(matrix.data[i][k]);
+                maxRowIndex = i;
+            }
+        }
+        if (maxRowIndex != k) {
+            swap(matrix.data[maxRowIndex], matrix.data[k]);
+            swap(columnOrder[maxRowIndex], columnOrder[k]);
+        }
+
+        // Elimination
+        for (int i = k + 1; i < n; ++i) {
+            double factor = matrix.data[i][k] / matrix.data[k][k];
+            for (int j = k; j < n + 1; ++j)
+                matrix.data[i][j] -= factor * matrix.data[k][j];
         }
     }
 
-    cout << "\nZamieniony wiersz:" << endl;
-    cout << "[" << max_id << "], " << max_value << endl;
+    printMatrix(matrix);
 
-    if (max_id != 0) {
-        for (int i = 0; i < n+1; ++i) {
-            double temp = matrix[0][i];
-            matrix[0][i] = matrix[max_id][i];
-            matrix[max_id][i] = temp;
+    // Rozwiązywanie układu równań
+    vector<double> solutions(n);
+    for (int i = n - 1; i >= 0; --i) {
+        solutions[i] = matrix.data[i][n];
+        for (int j = i + 1; j < n; ++j) {
+            solutions[i] -= matrix.data[i][j] * solutions[j];
         }
-    }
-}
-
-void gauss_crout(int n, double** matrix, bool &does_need_x_swap, int &index_to_swap) {
-    int max_id = 0;
-    double max_value = matrix[0][0];
-
-    for (int i = 0; i < n+1; ++i) {
-        if (max_value < abs(matrix[0][i])) {
-            max_value = matrix[0][i];
-            max_id = i;
-        }
+        solutions[i] /= matrix.data[i][i];
     }
 
-    cout << "\nZamieniony wiersz:" << endl;
-    cout << "[" << max_id << "], " << max_value << endl;
-
-    if (max_id != 0) {
-        does_need_x_swap = true;
-        index_to_swap = max_id;
-        for (int i = 0; i < n; ++i) {
-            double temp = matrix[i][0];
-            matrix[i][0] = matrix[i][max_id];
-            matrix[i][max_id] = temp;
-        }
-    }
+    return solutions;
 }
 
 int main() {
+    Matrix matrix = readMatrixFromFile("gauss-data-A.txt","gauss-data-B.txt");
 
-    bool does_need_x_swap = false;
-    int index_to_swap;
+    cout << "Macierz rozszerzona przed obliczeniami:" << endl;
+    printMatrix(matrix);
+    cout << endl;
 
-    int n;
-    cout << "Podaj n: ";
-    cin >> n;
-    cout << "\n";
+    vector<double> initialSolutions = solveGauss(matrix);
 
-    fstream A("gauss-data-A.txt");
-    fstream B("gauss-data-B.txt");
+    // zadanie 2
+//    vector<int> columnOrder;
+//    vector<double> initialSolutions = solveGaussCrout(matrix, columnOrder);
+//
+//    cout << "Numery kolumn: " << endl;
+//    for (int i = 0; i < matrix.size; ++i)
+//        cout << columnOrder[i] << " ";
+//    cout << endl << endl;
 
-    cout << "--- Liczba rownan ---" << "\nn = " << n << endl;
-
-    double **augmented_matrix = new double*[n];
-    for (int i = 0; i < n; ++i) {
-        augmented_matrix[i] = new double[n+1];
+    cout << "\nRozwiązanie układu równań:" << endl;
+    for (size_t i = 0; i < initialSolutions.size(); ++i) {
+        cout << "x_" << i << " = " << initialSolutions[i] << endl;
     }
 
-    // Wypelniane tablicy wartosciami wspolczynnikow
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            double g;
-            A >> g;
-            augmented_matrix[i][j] = g;
-        }
-
-        double h;
-        B >> h;
-        augmented_matrix[i][n] = h;
-    }
-
-    partial_pivoting(n, augmented_matrix); // zadanie 1
-    //gauss_crout(n, augmented_matrix, does_need_x_swap, index_to_swap); // zadanie 2
-
-    cout << "\n--- Macierz rozszerzona ---" << endl;
-    print_matrix(augmented_matrix, n); // przed odejmowaniem wierszy
-
-    //    cout << multiplier(2, 1, 1, rownania); // sprawdzenie czy mnoznik jest wyliczany prawidlowo
-    upper_triangular(augmented_matrix, n);
-
-    cout << "\n--- Macierz rozszerzona po przeksztalceniach ---" << endl;
-    print_matrix(augmented_matrix, n);    // po odjeciu wierszy
-
-
-    // tablica przechowuajca wartosci x
-    double x[n];
-
-    // wartosc x_n
-    x[n-1] = augmented_matrix[n-1][n]/augmented_matrix[n-1][n-1];
-
-    for (int i = n-2; i >= 0; --i) {
-        x[i] = compute_x(i, n, augmented_matrix, x);
-    }
-
-    // if we use gauss-crout and we need to swap x's
-    if (does_need_x_swap) {
-        double temp = x[0];
-        x[0] = x[index_to_swap];
-        x[index_to_swap] = temp;
-    }
-    
-    // wypisywanie x
-    cout << "\n--- Wyliczone wartosci x ---" << endl;
-    for (int i = 0; i < n; ++i) {
-        cout << "x_" << i << " = " << x[i] << endl;
-    }
-}   
+    return 0;
+}
